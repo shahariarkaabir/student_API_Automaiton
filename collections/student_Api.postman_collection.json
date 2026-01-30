@@ -1,0 +1,431 @@
+{
+  "info": {
+    "_postman_id": "49df8e23-1497-43e0-9823-fd5334939f6e",
+    "name": "student_Api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "23702612",
+    "_collection_link": "https://go.postman.co/collection/23702612-49df8e23-1497-43e0-9823-fd5334939f6e?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Get Student",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", () => {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Student list returned\", () => {\r",
+              "    pm.expect(pm.response.json().length).to.be.greaterThan(0);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/studentsDetails",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "studentsDetails"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Student",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const res = pm.response.json();\r",
+              "\r",
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response is an array\", function () {\r",
+              "    pm.expect(res).to.be.an(\"array\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"New student is created\", function () {\r",
+              "    const lastStudent = res[res.length - 1];\r",
+              "    pm.expect(lastStudent.id).to.not.be.undefined;\r",
+              "});\r",
+              "\r",
+              "// save ID immediately (no need extra GET)\r",
+              "pm.environment.set(\"id\", res[res.length - 1].id);\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const rand = Math.floor(Math.random() * 10000);\r",
+              "\r",
+              "pm.environment.set(\"firstName\", \"Student_\" + rand);\r",
+              "pm.environment.set(\"middleName\", \"Auto\");\r",
+              "pm.environment.set(\"lastName\", \"User\");\r",
+              "pm.environment.set(\"dateOfBirth\", \"01 Jan 2000\");\r",
+              "\r",
+              "// input validation\r",
+              "pm.test(\"First name is not empty\", () => {\r",
+              "    pm.expect(pm.environment.get(\"firstName\")).to.not.be.empty;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"DOB is not empty\", () => {\r",
+              "    pm.expect(pm.environment.get(\"dateOfBirth\")).to.not.be.empty;\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"first_name\": \"{{firstName}}\",\r\n  \"middle_name\": \"{{middleName}}\",\r\n  \"last_name\": \"{{lastName}}\",\r\n  \"date_of_birth\": \"{{dateOfBirth}}\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/studentsDetails",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "studentsDetails"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Verify Created Student",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const students = pm.response.json();\r",
+              "const studentId = pm.environment.get(\"id\");\r",
+              "\r",
+              "pm.test(\"Student exists in list\", () => {\r",
+              "    const found = students.some(s => s.id == studentId);\r",
+              "    pm.expect(found).to.be.true;\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/studentsDetails",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "studentsDetails"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Student",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Update successful\", () => {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "pm.environment.set(\r",
+              "  \"firstName\",\r",
+              "  \"Updated_\" + Math.floor(Math.random() * 10000)\r",
+              ");\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n \"id\":{{id}},\r\n \"first_name\": \"{{firstName}}\",\r\n \"middle_name\": \"{{middleName}}\",\r\n \"last_name\": \"{{lastName}}\",\r\n \"date_of_birth\": \"{{dateOfBirth}}\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/studentsDetails/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "studentsDetails",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Verify Student Updated",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const res = pm.response.json();\r",
+              "\r",
+              "pm.test(\"Response has data object\", () => {\r",
+              "    pm.expect(res).to.have.property(\"data\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"First name exists after update\", () => {\r",
+              "    pm.expect(res.data.first_name).to.be.a(\"string\").and.not.empty;\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/studentsDetails/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "studentsDetails",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Specific Student",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const res = pm.response.json();\r",
+              "\r",
+              "pm.test(\"Specific student details fetched\", () => {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Student ID matches requested ID\", () => {\r",
+              "    pm.expect(res.data.id).to.eql(Number(pm.environment.get(\"id\")));\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Student name exists\", () => {\r",
+              "    pm.expect(res.data.first_name).to.be.a(\"string\").and.not.empty;\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "\r",
+              "\r",
+              "    \r",
+              "\r",
+              "   \r",
+              "\r",
+              "\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/studentsDetails/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "studentsDetails",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Add Address",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Address added successfully\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"address\": {\r\n    \"city\": \"Dhaka\",\r\n    \"state\": \"Dhaka\",\r\n    \"country\": \"Bangladesh\",\r\n    \"pin\": \"1207\"\r\n  }\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/studentsDetails/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "studentsDetails",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Student",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Student delete request successful\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/studentsDetails/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "studentsDetails",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
