@@ -2,6 +2,12 @@
 
 This project demonstrates end-to-end **API automation testing** using **Postman**, **Newman**, and **GitHub Actions CI/CD** for the Student API provided by https://thetestingworldapi.com/.
 
+## 💻 Run Instruction:
+1. Download the Project Folder
+2. Navigate to the Project Folder
+3. Install Dependencies: npm install
+4. Run API Automaiton Test: npm run api-test
+
 ---
 
 ## 🧪 APIs Covered
